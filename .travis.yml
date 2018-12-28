@@ -1,0 +1,22 @@
+sudo: required
+services: 
+  - docker
+
+before_install: 
+  - docker build -t gmeier25/tests -f ./client/Dockerfile.dev ./client
+
+script:
+  -  docker run gmeier25/tests npm test -- --coverage
+
+after_success: 
+  - docker build -t gmeier25/multi-client ./client
+  - docker build -t gmeier25/multi-nginx ./nginx
+  - docker build -t gmeier25/multi-server ./server
+  - docker build -t gmeier25/multi-worker ./worker
+
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+
+  - docker push gmeier25/multi-client
+  - docker push gmeier25/multi-nginx
+  - docker push gmeier25/multi-server
+  - docker push gmeier25/multi-worker
