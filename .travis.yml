@@ -6,7 +6,7 @@ before_install:
   - docker build -t gmeier25/tests -f ./client/Dockerfile.dev ./client
 
 script:
-  -  docker run gmeier25/tests npm run test -- --coverage
+  -  docker run gmeier25/tests npm test -- --coverage
 
 after_success: 
   - docker build -t gmeier25/multi-client ./client
